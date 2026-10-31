@@ -14,7 +14,10 @@ export default function HeroCanvas() {
   // Defer Canvas mount until after hydration.
   // Three.js touches WebGL + window APIs during init, so mounting it on the
   // server pass produces hydration mismatches and a wasted double-init.
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     // Reserve layout space with the same background so there's no flash.
