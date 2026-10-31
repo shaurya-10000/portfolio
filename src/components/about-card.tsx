@@ -1,10 +1,14 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { LazyMotion, m, type Variants } from "framer-motion";
 import { FileText, Cpu, Globe, Code2, Layers, Mail } from "lucide-react";
 
 import { Card } from "@/components/card";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
+
+// Animation features load after first paint instead of in the main bundle.
+const loadFeatures = () =>
+  import("@/lib/motion-features").then((mod) => mod.default);
 
 /**
  * Ordered by relevance, not alphabetically.
@@ -52,8 +56,9 @@ const itemVariants: Variants = {
 
 export default function AboutCard() {
   return (
+    <LazyMotion features={loadFeatures} strict>
     <section id="about" className="py-24 px-6 md:px-8 max-w-7xl mx-auto">
-      <motion.div
+      <m.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.15 }}
@@ -61,7 +66,7 @@ export default function AboutCard() {
         className="grid grid-cols-1 md:grid-cols-3 gap-4"
       >
         {/* ── MAIN IDENTITY CARD ─────────────────────────── */}
-        <motion.div variants={itemVariants} className="md:col-span-2">
+        <m.div variants={itemVariants} className="md:col-span-2">
           <Card className="h-full bg-card/50 border-border p-8 flex flex-col justify-between relative overflow-hidden group">
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-6">
@@ -110,7 +115,7 @@ export default function AboutCard() {
 
               <div className="flex gap-2">
                 <a
-                  href="https://github.com/shaurya-100000"
+                  href="https://github.com/shaurya-10000"
                   target="_blank"
                   rel="noopener noreferrer"
                   title="GitHub"
@@ -139,10 +144,10 @@ export default function AboutCard() {
 
             <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-primary/5 blur-[100px] group-hover:bg-primary/10 transition-all duration-500 pointer-events-none" />
           </Card>
-        </motion.div>
+        </m.div>
 
         {/* ── TECH STACK CARD ────────────────────────────── */}
-        <motion.div variants={itemVariants}>
+        <m.div variants={itemVariants}>
           <Card className="h-full bg-card/50 border-border p-8 flex flex-col relative overflow-hidden">
             <div className="flex items-center gap-2 mb-8 text-foreground">
               <Cpu className="w-5 h-5" />
@@ -191,10 +196,10 @@ export default function AboutCard() {
               </div>
             </div>
           </Card>
-        </motion.div>
+        </m.div>
 
         {/* ── BOTTOM METRICS BAR ─────────────────────────── */}
-        <motion.div variants={itemVariants} className="md:col-span-3">
+        <m.div variants={itemVariants} className="md:col-span-3">
           <Card className="p-8 bg-card/50 border-border">
             <div className="flex flex-col md:flex-row justify-between gap-8">
               <div className="flex items-center gap-4">
@@ -244,8 +249,9 @@ export default function AboutCard() {
               </div>
             </div>
           </Card>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
     </section>
+    </LazyMotion>
   );
 }
