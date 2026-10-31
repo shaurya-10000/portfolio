@@ -1,23 +1,48 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { ArrowDown } from "lucide-react";
 
-import HeroCanvas from "@/components/hero-canvas";
+
 import { Button } from "@/components/ui";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import AboutCard from "@/components/about-card";
-import WorldClock from "@/components/projects/world-clock";
+const HeroCanvas = dynamic(() => import("@/components/hero-canvas"), {
+  ssr: false,
+  loading: () => null,
+});
+
+const WorldClock = dynamic(() => import("@/components/projects/world-clock"), {
+  ssr: false,
+  loading: () => <section className="min-h-screen" aria-hidden="true" />,
+});
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
 export default function Home() {
+  const [showCanvas, setShowCanvas] = useState(false);
+
+  // Mount the heavy 3D scene only after the hero text has painted.
+  useEffect(() => {
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    if (w.requestIdleCallback) {
+      const id = w.requestIdleCallback(() => setShowCanvas(true), { timeout: 1500 });
+      return () => w.cancelIdleCallback?.(id);
+    }
+    const t = window.setTimeout(() => setShowCanvas(true), 300);
+    return () => window.clearTimeout(t);
+  }, []);
   return (
     <main className="relative min-h-screen w-full">
       <div className="fixed inset-0 z-0">
-        <HeroCanvas />
+        {showCanvas && <HeroCanvas />}
       </div>
 
       <div className="relative z-10">

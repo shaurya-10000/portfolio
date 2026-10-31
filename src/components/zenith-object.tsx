@@ -13,17 +13,16 @@ import * as THREE from "three";
  * refraction through the facets, plus a wireframe "echo" shell at a slightly
  * larger radius rotating at a different rate for parallax depth.
  *
- * Both meshes share the same base icosahedron so the visual reads as a single
- * object with an outer shell, not two unrelated shapes.
+ * Transmission buffer resolution and sample count are kept low on purpose:
+ * the material re-renders the scene into an offscreen buffer every frame, and
+ * on a faceted low-poly shape the visual difference above these values is
+ * negligible while the GPU/CPU cost is not.
  */
 export default function ZenithObject() {
   const crystalRef = useRef<THREE.Mesh>(null);
   const wireRef = useRef<THREE.LineSegments>(null);
   const { resolvedTheme } = useTheme();
 
-  // Build the wireframe geometry once and reuse it. `edgesGeometry` extracts
-  // the edges of the icosahedron — cleaner and cheaper than a full wireframe
-  // material, and it produces sharp facet outlines instead of triangles.
   const edgesGeometry = useMemo(
     () => new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.28, 0)),
     [],
@@ -43,9 +42,6 @@ export default function ZenithObject() {
 
   const isDark = resolvedTheme !== "light";
 
-  // Crystal body shifts with theme. Light mode uses a darker glass so it
-  // reads against the pale background; dark mode uses a pale glass so it
-  // catches the rim light.
   const crystalColor = isDark ? "#e4e4e7" : "#3f3f46";
   const wireColor = isDark ? "#a1a1aa" : "#71717a";
 
@@ -68,8 +64,8 @@ export default function ZenithObject() {
             temporalDistortion={0.05}
             backside
             backsideThickness={0.3}
-            samples={6}
-            resolution={512}
+            samples={4}
+            resolution={256}
           />
         </mesh>
 

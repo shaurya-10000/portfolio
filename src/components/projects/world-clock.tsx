@@ -386,7 +386,6 @@ function Lightbox({
             alt={current.alt}
             fill
             sizes="100vw"
-            priority
             className="object-contain"
           />
         </div>
@@ -566,7 +565,7 @@ function ScreenshotCarousel({
           >
             <SlideImage
               shot={current}
-              priority={index === 0}
+              priority={false}
               onOpen={() => onOpenLightbox(index)}
             />
           </motion.div>
