@@ -1,19 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { ArrowDown } from "lucide-react";
-
 
 import { Button } from "@/components/ui";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-const AboutCard = dynamic(() => import("@/components/about-card"), {
-  loading: () => <section className="min-h-[60vh]" aria-hidden="true" />,
-});
+
 const HeroCanvas = dynamic(() => import("@/components/hero-canvas"), {
   ssr: false,
   loading: () => null,
+});
+
+const AboutCard = dynamic(() => import("@/components/about-card"), {
+  loading: () => <section className="min-h-[60vh]" aria-hidden="true" />,
 });
 
 const WorldClock = dynamic(() => import("@/components/projects/world-clock"), {
@@ -25,14 +26,67 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
+/**
+ * The 3D hero is skipped on phone-sized screens, reduced-motion, Data Saver,
+ * and low-core devices. Those visitors get the static gradient instead, which
+ * avoids downloading and running ~1.2 MB of three.js on hardware that
+ * struggles with a transmission shader.
+ */
+function shouldRender3D(): boolean {
+  const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
+  return !(
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    window.matchMedia("(max-width: 767px)").matches ||
+    (navigator.hardwareConcurrency ?? 8) < 4 ||
+    nav.connection?.saveData
+  );
+}
+
+/**
+ * Renders its children only once the placeholder is within `rootMargin` of the
+ * viewport, so heavy below-the-fold sections don't compete with first paint.
+ */
+function LazyMount({
+  children,
+  minHeight = "100vh",
+  rootMargin = "600px",
+}: {
+  children: ReactNode;
+  minHeight?: string;
+  rootMargin?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [rootMargin]);
+
+  return (
+    <div ref={ref} style={visible ? undefined : { minHeight }}>
+      {visible ? children : null}
+    </div>
+  );
+}
+
 export default function Home() {
   const [showCanvas, setShowCanvas] = useState(false);
 
   // Mount the heavy 3D scene only after the hero text has painted.
   useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const lowEnd = (navigator.hardwareConcurrency ?? 8) < 4;
-    if (reduceMotion || lowEnd) return;
+    if (!shouldRender3D()) return;
     const w = window as Window & {
       requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
       cancelIdleCallback?: (id: number) => void;
@@ -44,6 +98,7 @@ export default function Home() {
     const t = window.setTimeout(() => setShowCanvas(true), 300);
     return () => window.clearTimeout(t);
   }, []);
+
   return (
     <main className="relative min-h-screen w-full">
       <div className="fixed inset-0 z-0 bg-gradient-to-b from-background to-muted/30">
@@ -104,10 +159,12 @@ export default function Home() {
 
         {/*
           All projects live inside #projects.
-          Add future projects as siblings of <WorldClock /> below.
+          Add future projects as siblings of the WorldClock block below.
         */}
         <div id="projects" className="flex flex-col">
-          <WorldClock />
+          <LazyMount>
+            <WorldClock />
+          </LazyMount>
           {/* <ProjectXyz /> */}
           {/* <ProjectAbc /> */}
         </div>
