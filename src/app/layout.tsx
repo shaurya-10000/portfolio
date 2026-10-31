@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +16,6 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const SITE_URL = "https://zenith.dev"; // TODO: swap for real domain
 const SITE_NAME = "Zenith";
 const SITE_DESCRIPTION =
   "Full-stack web developer engineering intelligent SaaS ecosystems through full-stack architecture and AI-driven orchestration.";
