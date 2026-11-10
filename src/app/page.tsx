@@ -21,6 +21,10 @@ const WorldClock = dynamic(() => import("@/components/projects/world-clock"), {
   ssr: false,
   loading: () => <section className="min-h-screen" aria-hidden="true" />,
 });
+const Cafe = dynamic(() => import("@/components/projects/cafe"), {
+  ssr: false,
+  loading: () => <section className="min-h-screen" aria-hidden="true" />,
+});
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -164,6 +168,9 @@ export default function Home() {
         <div id="projects" className="flex flex-col">
           <LazyMount>
             <WorldClock />
+          </LazyMount>
+          <LazyMount>
+            <Cafe />
           </LazyMount>
           {/* <ProjectXyz /> */}
           {/* <ProjectAbc /> */}
