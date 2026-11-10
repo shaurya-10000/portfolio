@@ -17,7 +17,6 @@ import {
   type Variants,
 } from "framer-motion";
 import {
-  Accessibility,
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
@@ -27,7 +26,6 @@ import {
   ExternalLink,
   ImageOff,
   Layers,
-  MessageSquare,
   Radio,
   Repeat,
   ShieldCheck,
