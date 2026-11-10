@@ -17,26 +17,13 @@ const AboutCard = dynamic(() => import("@/components/about-card"), {
   loading: () => <section className="min-h-[60vh]" aria-hidden="true" />,
 });
 
-const WorldClock = dynamic(() => import("@/components/projects/world-clock"), {
-  ssr: false,
-  loading: () => <section className="min-h-screen" aria-hidden="true" />,
-});
-const Cafe = dynamic(() => import("@/components/projects/cafe"), {
-  ssr: false,
-  loading: () => <section className="min-h-screen" aria-hidden="true" />,
-});
-const FpsGame = dynamic(() => import("@/components/projects/fps-game"), {
-  ssr: false,
-  loading: () => <section className="min-h-screen" aria-hidden="true" />,
-});
-const FpsGameWeb = dynamic(() => import("@/components/projects/fps-game-web"), {
-  ssr: false,
-  loading: () => <section className="min-h-screen" aria-hidden="true" />,
-});
-const PySubset = dynamic(() => import("@/components/projects/pysubset-interpreter"), {
-  ssr: false,
-  loading: () => <section className="min-h-screen" aria-hidden="true" />,
-});
+const ProjectGrid = dynamic(
+  () =>
+    import("@/components/projects/project-grid").then((m) => m.ProjectGrid),
+  {
+    loading: () => <section className="min-h-[60vh]" aria-hidden="true" />,
+  }
+);
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -173,29 +160,9 @@ export default function Home() {
           <AboutCard />
         </div>
 
-        {/*
-          All projects live inside #projects.
-          Add future projects as siblings of the WorldClock block below.
-        */}
-        <div id="projects" className="flex flex-col">
-          <LazyMount>
-            <WorldClock />
-          </LazyMount>
-          <LazyMount>
-            <Cafe />
-          </LazyMount>
-          <LazyMount>
-            <FpsGame />
-          </LazyMount>
-          <LazyMount>
-            <FpsGameWeb />
-          </LazyMount>
-          <LazyMount>
-            <PySubset />
-          </LazyMount>
-          {/* <ProjectXyz /> */}
-          {/* <ProjectAbc /> */}
-        </div>
+        <LazyMount minHeight="60vh" rootMargin="400px">
+          <ProjectGrid />
+        </LazyMount>
 
         <Footer />
       </div>
