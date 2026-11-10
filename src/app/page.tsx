@@ -25,6 +25,10 @@ const Cafe = dynamic(() => import("@/components/projects/cafe"), {
   ssr: false,
   loading: () => <section className="min-h-screen" aria-hidden="true" />,
 });
+const FpsGame = dynamic(() => import("@/components/projects/fps-game"), {
+  ssr: false,
+  loading: () => <section className="min-h-screen" aria-hidden="true" />,
+});
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -171,6 +175,9 @@ export default function Home() {
           </LazyMount>
           <LazyMount>
             <Cafe />
+          </LazyMount>
+          <LazyMount>
+            <FpsGame />
           </LazyMount>
           {/* <ProjectXyz /> */}
           {/* <ProjectAbc /> */}
