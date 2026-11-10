@@ -33,6 +33,10 @@ const FpsGameWeb = dynamic(() => import("@/components/projects/fps-game-web"), {
   ssr: false,
   loading: () => <section className="min-h-screen" aria-hidden="true" />,
 });
+const PySubset = dynamic(() => import("@/components/projects/pysubset-interpreter"), {
+  ssr: false,
+  loading: () => <section className="min-h-screen" aria-hidden="true" />,
+});
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -185,6 +189,9 @@ export default function Home() {
           </LazyMount>
           <LazyMount>
             <FpsGameWeb />
+          </LazyMount>
+          <LazyMount>
+            <PySubset />
           </LazyMount>
           {/* <ProjectXyz /> */}
           {/* <ProjectAbc /> */}
