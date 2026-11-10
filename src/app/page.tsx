@@ -29,6 +29,10 @@ const FpsGame = dynamic(() => import("@/components/projects/fps-game"), {
   ssr: false,
   loading: () => <section className="min-h-screen" aria-hidden="true" />,
 });
+const FpsGameWeb = dynamic(() => import("@/components/projects/fps-game-web"), {
+  ssr: false,
+  loading: () => <section className="min-h-screen" aria-hidden="true" />,
+});
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -178,6 +182,9 @@ export default function Home() {
           </LazyMount>
           <LazyMount>
             <FpsGame />
+          </LazyMount>
+          <LazyMount>
+            <FpsGameWeb />
           </LazyMount>
           {/* <ProjectXyz /> */}
           {/* <ProjectAbc /> */}
